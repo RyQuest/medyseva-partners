@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Appointment;
 use App\Models\Chamber;
 use App\Models\Patients;
+use App\Models\Patient;
 use App\Models\TrHistory;
 use App\Models\User;
 use App\Models\UserWallet;
@@ -44,7 +45,9 @@ class AppointmentController extends Controller
             }
         }
        // $user = JWTAuth::parseToken()->authenticate($request->get('token'));
-       
+
+       $user = VleUser::where('id',$request->user_id)->first();
+
        $userAalletAmount = UserWallet::where('user_id',$user->id)->where('user_role','vle')->first();
        
        $consultation_fee = 0;
@@ -330,4 +333,24 @@ class AppointmentController extends Controller
 
         return response(['status' => 1,'data' => $appointment]);
     }
+
+     
+    public function VleDashboard(Request $request){
+
+
+        $patients=Patients::where('added_by',$request->user_id)->count();
+
+        $appointment= Appointment::where('added_by',$request->user_id)->count();
+
+        $wallet=UserWallet::select('amount')->where('user_id',$request->user_id)->first();
+
+        $balance=$wallet->amount;
+        
+        $dashboard=array('patients'=>$patients,'appointments'=>$appointment,'balance'=>$balance);
+
+        return response(['status'=>1,'data'=>$dashboard]);
+
+
+    }
+
 }
