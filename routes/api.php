@@ -39,3 +39,5 @@ Route::get('/vle-withdraw-requests',[App\Http\Controllers\api\AppointmentControl
 Route::get('/vle-wallet-history',[App\Http\Controllers\api\AppointmentController::class, 'index'])->name('vle-wallet-history');
 
 Route::post('/vle-dashboard',[App\Http\Controllers\api\AppointmentController::class, 'VleDashboard'])->name('vle-dashboard');
+
+Route::post('/vle-patients',[App\Http\Controllers\api\VleController::class, 'vlePatient'])->name('vle-patients');

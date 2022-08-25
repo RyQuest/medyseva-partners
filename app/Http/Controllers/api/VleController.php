@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\VleUser;
+use App\Models\Patients;
 
 class VleController extends Controller
 {
@@ -56,5 +57,15 @@ class VleController extends Controller
     }
 
 
+   public function vlePatient(Request $request){
+     
+        $patients=Patients::where('added_by',$request->user_id)->get();
+
+        return response()->json([
+            'status' => 1,
+            'patient' => $patients,
+        ]);
+        
+   }
 
 }
