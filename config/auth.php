@@ -40,6 +40,14 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        
+        
+      'vle' => [
+        'driver' => 'session',
+        'provider' => 'vles',
+        ],
+
+
     ],
 
     /*
@@ -69,6 +77,11 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+
+        'vles' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\VleUser::class,
+        ],
     ],
 
     /*
