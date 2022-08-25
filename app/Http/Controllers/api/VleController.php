@@ -59,7 +59,7 @@ class VleController extends Controller
 
    public function vlePatient(Request $request){
      
-        $patients=Patients::where('added_by',$request->user_id)->get();
+        $patients=Patients::where('added_by',$request->user_id)->first();
 
         return response()->json([
             'status' => 1,
