@@ -32,7 +32,8 @@ Route::post('/vle-create-appointment',[App\Http\Controllers\api\AppointmentContr
 
 Route::post('/vle-withdraw-request',[App\Http\Controllers\api\AppointmentController::class, 'withdrawRequestAdd'])->name('vle-withdraw-request');
 
-Route::get('/vle-withdraw-request',[App\Http\Controllers\api\AppointmentController::class, 'withdrawRequest'])->name('vle-withdraw-request');
+
+Route::get('/vle-withdraw-requests',[App\Http\Controllers\api\AppointmentController::class, 'withdrawRequest'])->name('vle-withdraw-requests');
 
 
 Route::get('/vle-wallet-history',[App\Http\Controllers\api\AppointmentController::class, 'index'])->name('vle-wallet-history');
