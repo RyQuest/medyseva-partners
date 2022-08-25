@@ -20,3 +20,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::post('/vle-login',[App\Http\Controllers\api\VleController::class, 'login'])->name('vle-login');
+
+/*
+Route::middleware('auth:sanctum')->group( function () {
+    Route::resource('products', ProductController::class);
+});
+*/
+Route::post('/vle-appointment',[App\Http\Controllers\api\AppointmentController::class, 'index'])->name('vle-appointment');
+
+Route::post('/vle-create-appointment',[App\Http\Controllers\api\AppointmentController::class, 'create'])->name('vle-create-appointment');
+
