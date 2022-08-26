@@ -18,14 +18,19 @@ class WalletController extends Controller
 
     public function index(Request $request)
     {
-        $user = VleUser::where('id',$request->user_id)->first();
-        
+        $user_id = $request->input('user_id');
+        $limit   = $request->input('limit');
+        $offset  = $request->input('offset');
+
+        $user = VleUser::find($request->input('user_id'));
         $data['wallet'] = UserWallet::where('user_id', $user->id)->where('user_role', 'vle')->first();
         $wallet_id = $data['wallet']->id;
         $history = TrHistory::where(function ($query) use ($wallet_id) {
             return $query->orWhere('from_wallet', $wallet_id)
                 ->orWhere('to_wallet', $wallet_id);
         })
+            ->take($limit)
+            ->skip($offset)
             ->latest()
             ->get();
 
@@ -43,6 +48,8 @@ class WalletController extends Controller
         $data['history'] = $history;
         return response(['status' => 1, 'data' => $data]);
     }
+
+
     public function withdrawRequest(Request $request)
     {
         $user = VleUser::where('id',$request->user_id)->first();
