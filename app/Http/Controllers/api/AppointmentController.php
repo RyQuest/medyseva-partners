@@ -147,7 +147,7 @@ class AppointmentController extends Controller
             'spo2' => $request->spo2,
 
             'chief_complains' => $request->chief_complains,
-            'consultations_type'  => "",//$request->get('payment_mode'),
+            'consultations_type'  => "on_line",//$request->get('payment_mode'),
             'follow_up' => $request->follow_up,
             'created_at' => date('Y-m-d H:i:s'),
             'added_by' => $user->id,
