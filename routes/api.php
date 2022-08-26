@@ -45,4 +45,9 @@ Route::post('/vle-today-appointment',[App\Http\Controllers\api\AppointmentContro
 
 Route::post('/vle-appointment-details',[App\Http\Controllers\api\AppointmentController::class, 'appointmentDetails'])->name('vle-appointment-details');
 
+
+Route::post('/vle-invoice',[App\Http\Controllers\api\InvoiceController::class, 'vle_invoice'])->name('vle-invoice');
+
+
+
 Route::post('/vle-patients',[App\Http\Controllers\api\VleController::class, 'vlePatient'])->name('vle-patients');
