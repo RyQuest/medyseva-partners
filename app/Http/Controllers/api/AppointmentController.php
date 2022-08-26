@@ -334,6 +334,21 @@ class AppointmentController extends Controller
         return response(['status' => 1,'data' => $appointment]);
     }
 
+
+    public function appointmentDetails(Request $request){
+
+
+         $appointment=Appointment::where("id",$request->id)->first();
+
+         $patient=Patients::where('id',$appointment->patient_id)->first();
+
+         $doctor=User::where('id',$appointment->user_id)->first();
+
+         return response(['status'=>1,'appointment'=>$appointment,'patient'=>$patient,'doctor'=>$doctor]);
+
+
+    }
+
      
     public function VleDashboard(Request $request){
 
