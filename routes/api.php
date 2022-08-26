@@ -40,8 +40,9 @@ Route::post('/vle-wallet-history',[App\Http\Controllers\api\WalletController::cl
 
 Route::post('/vle-dashboard',[App\Http\Controllers\api\AppointmentController::class, 'VleDashboard'])->name('vle-dashboard');
 
+Route::post('/vle-today-appointment',[App\Http\Controllers\api\AppointmentController::class, 'vleTodayAppointment'])->name('vle-today-appointment');
+
 
 Route::post('/vle-appointment-details',[App\Http\Controllers\api\AppointmentController::class, 'appointmentDetails'])->name('vle-appointment-details');
-
 
 Route::post('/vle-patients',[App\Http\Controllers\api\VleController::class, 'vlePatient'])->name('vle-patients');

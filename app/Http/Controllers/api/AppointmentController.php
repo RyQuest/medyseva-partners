@@ -12,11 +12,18 @@ use App\Models\TrHistory;
 use App\Models\User;
 use App\Models\UserWallet;
 use App\Models\VleUser;
+use Carbon\Carbon;
 class AppointmentController extends Controller
 {
     
     public function create(Request $request)
     {
+
+        // $data=$request->all();
+
+        // print_r($data);
+        // exit;
+        
         $validator = \Validator::make($request->all(), [
             'consultation_type' => 'required',
             'date' => 'required',
@@ -27,7 +34,7 @@ class AppointmentController extends Controller
             return response(['status' => 0, 'msg' => $validator->errors()->first()]);
         }
 
-        if ($request->get('patient_type') == "1") {
+        if ($request->patient_type == "1") {
             $validator = \Validator::make($request->all(), [
                 'name' => 'required',
                 'mobile' => 'required',
@@ -52,7 +59,7 @@ class AppointmentController extends Controller
        
        $consultation_fee = 0;
         
-       if ($request->get('consultation_type') == "1") {
+       if ($request->consultation_type == "1") {
             $consultation_fee = 150;
         } else {
             $consultation_fee = 500;
@@ -61,33 +68,33 @@ class AppointmentController extends Controller
             return response(['status' => 0, 'msg' => 'Insufficient wallet amount']);
         }
         $patient = null;
-        if ($request->get('patient_type') == "1") {
+        if ($request->patient_type == "1") {
             $patient = Patients::create([
                 'user_id' => $user->id,
 
-                'name' => $request->get('name'),
+                'name' => $request->name,
 
-                'email' => $request->get('email'),
+                'email' => $request->email,
 
                 'mr_number' => rand(11111, 99999),
 
-                'about_id' => $request->get('about_medyseva'),
-                'other' => $request->get('other'),
+                'about_id' => $request->about_medyseva,
+                'other' => $request->other,
 
-                'age' => $request->get('age'),
+                'age' => $request->age,
 
-                'govt_id' => $request->get('govt_id'),
+                'govt_id' => $request->govt_id,
 
-                'govt_id_detail' => $request->get('govt_id_detail'),
+                'govt_id_detail' => $request->govt_id_detail,
 
-                'occuptation' => $request->get('occuptation'),
-                'weight' => $request->get('weight'),
+                'occuptation' => $request->occuptation,
+                'weight' => $request->weight,
 
-                'sex' => $request->get('sex'),
+                'sex' => $request->sex,
 
-                'mobile' => $request->get('mobile'),
+                'mobile' => $request->mobile,
 
-                'present_address' => $request->get('present_address'),
+                'present_address' => $request->present_address,
 
                 'password' => bcrypt(rand(1111, 9999)),
 
@@ -95,10 +102,10 @@ class AppointmentController extends Controller
 
                 'added_by' => $user->id,
                 'added_by_role' => 'vle',
-                'national_health_id' => $request->get('national_health_id'),
+                'national_health_id' => $request->national_health_id,
             ]);
         } else {
-            $patient = Patients::find($request->get('patient_id'));
+            $patient = Patients::find($request->patient_id);
         }
         if(null == $patient){
             return response(['status' => 0, 'msg' => 'Patient not found']);
@@ -117,42 +124,42 @@ class AppointmentController extends Controller
 
             'serial_id' => 0,
 
-            'date' => $request->get('date'),
+            'date' => $request->date,
 
-            'time' => $request->get('time'),
+            'time' => $request->time,
 
             'status' => 0,
 
-            'type' => $request->get('cons_type'),
+            'type' => $request->cons_type,
 
-            't' => $request->get('t'),
+            't' => $request->t,
 
-            'p' => $request->get('p'),
+            'p' => $request->p,
 
-            'r' => $request->get('r'),
+            'r' => $request->r,
 
-            'bp' => $request->get('bp'),
+            'bp' => $request->bp,
 
-            'ht' => $request->get('ht'),
+            'ht' => $request->ht,
 
-            'wt' => $request->get('wt'),
+            'wt' => $request->wt,
 
-            'spo2' => $request->get('spo2'),
+            'spo2' => $request->spo2,
 
-            'chief_complains' => $request->get('chief_complains'),
+            'chief_complains' => $request->chief_complains,
             'consultations_type'  => "",//$request->get('payment_mode'),
-            'follow_up' => $request->get('follow_up'),
+            'follow_up' => $request->follow_up,
             'created_at' => date('Y-m-d H:i:s'),
             'added_by' => $user->id,
             'added_by_role' => 'vle',
-            'fbs' => $request->get('fbs'),
-            'rbs' => $request->get('rbs'),
-            'ppbs' => $request->get('ppbs'),
-            'blood_group' => $request->get('blood_group'),
-            'appointment_type' => $request->get('consultation_type')
+            'fbs' => $request->fbs,
+            'rbs' => $request->rbs,
+            'ppbs' => $request->ppbs,
+            'blood_group' => $request->blood_group,
+            'appointment_type' => $request->consultation_type
         ]);
 
-        if ($request->get('consultation_type') == "1") {
+        if ($request->consultation_type == "1") {
             $service_fee = 150;
             $vle_ref = 19;
             $partner_ref = 9.50;
@@ -256,7 +263,7 @@ class AppointmentController extends Controller
 
         // partner ref
         if ($partner_ref > 0) {
-            $partnerWallet = UserWallet::find(5);
+            $partnerWallet = UserWallet::where('user_id',$user->added_by)->first();
             $partnerUserWallet = $partnerWallet->amount;
 
             $adminNewAmount = $adminNewAmount - $partner_ref;
@@ -333,6 +340,22 @@ class AppointmentController extends Controller
 
         return response(['status' => 1,'data' => $appointment]);
     }
+
+
+    public function vleTodayAppointment(Request $request)
+    {
+
+        $appointment = Appointment::select('appointments.*','patientses.name','patientses.mobile','patientses.email')
+                       ->where('appointments.added_by',$request->user_id)->where('appointments.created_at',Carbon::today())
+                        ->join('patientses','patientses.id','=','appointments.patient_id')->orderBy('id','desc')
+                        ->get();
+
+         
+
+        return response(['status' => 1,'data' => $appointment]);
+    }
+
+
 
 
     public function appointmentDetails(Request $request){
