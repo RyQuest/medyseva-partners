@@ -36,7 +36,7 @@ Route::post('/vle-withdraw-request',[App\Http\Controllers\api\WalletController::
 Route::post('/vle-withdraw-requests',[App\Http\Controllers\api\WalletController::class, 'withdrawRequest'])->name('vle-withdraw-requests');
 
 
-Route::get('/vle-wallet-history',[App\Http\Controllers\api\WalletController::class, 'index'])->name('vle-wallet-history');
+Route::post('/vle-wallet-history',[App\Http\Controllers\api\WalletController::class, 'index'])->name('vle-wallet-history');
 
 Route::post('/vle-dashboard',[App\Http\Controllers\api\AppointmentController::class, 'VleDashboard'])->name('vle-dashboard');
 
