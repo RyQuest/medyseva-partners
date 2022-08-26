@@ -390,7 +390,7 @@ class AppointmentController extends Controller
     {
 
         $appointment = Appointment::select('appointments.*','patientses.name','patientses.mobile','patientses.email')
-                       ->where('appointments.added_by',$request->user_id)->where('appointments.created_at',Carbon::today())
+                       ->where('appointments.added_by',$request->user_id)->where('appointments.date',date('d-m-y'))
                         ->join('patientses','patientses.id','=','appointments.patient_id')->orderBy('id','desc')
                         ->get();
 
