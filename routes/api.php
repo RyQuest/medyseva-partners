@@ -30,13 +30,13 @@ Route::post('/vle-appointment',[App\Http\Controllers\api\AppointmentController::
 
 Route::post('/vle-create-appointment',[App\Http\Controllers\api\AppointmentController::class, 'create'])->name('vle-create-appointment');
 
-Route::post('/vle-withdraw-request',[App\Http\Controllers\api\AppointmentController::class, 'withdrawRequestAdd'])->name('vle-withdraw-request');
+Route::post('/vle-withdraw-request',[App\Http\Controllers\api\WalletController::class, 'withdrawRequestAdd'])->name('vle-withdraw-request');
 
 
-Route::get('/vle-withdraw-requests',[App\Http\Controllers\api\AppointmentController::class, 'withdrawRequest'])->name('vle-withdraw-requests');
+Route::post('/vle-withdraw-requests',[App\Http\Controllers\api\WalletController::class, 'withdrawRequest'])->name('vle-withdraw-requests');
 
 
-Route::get('/vle-wallet-history',[App\Http\Controllers\api\AppointmentController::class, 'index'])->name('vle-wallet-history');
+Route::get('/vle-wallet-history',[App\Http\Controllers\api\WalletController::class, 'index'])->name('vle-wallet-history');
 
 Route::post('/vle-dashboard',[App\Http\Controllers\api\AppointmentController::class, 'VleDashboard'])->name('vle-dashboard');
 

@@ -325,7 +325,7 @@ class AppointmentController extends Controller
     public function index(Request $request)
     {
 
-        $appointment = Appointment::select('appointments.*','patientses.name')
+        $appointment = Appointment::select('appointments.*','patientses.name')->where('added_by',$request->user_id)
         ->join('patientses','patientses.id','=','appointments.patient_id')->orderBy('id','desc')
         ->get();
 
