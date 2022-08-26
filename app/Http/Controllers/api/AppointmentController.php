@@ -30,9 +30,12 @@ class AppointmentController extends Controller
             'patient_type' => 'required',
         ]);
 
+
         if ($validator->fails()) {
             return response(['status' => 0, 'msg' => $validator->errors()->first()]);
         }
+
+
 
         if ($request->patient_type == "1") {
             $validator = \Validator::make($request->all(), [
@@ -52,10 +55,14 @@ class AppointmentController extends Controller
             }
         }
        // $user = JWTAuth::parseToken()->authenticate($request->get('token'));
+       
+
 
        $user = VleUser::where('id',$request->user_id)->first();
 
-       $userAalletAmount = UserWallet::where('user_id',$user->id)->where('user_role','vle')->first();
+
+
+        $vleUserWallet = UserWallet::where('user_id',$user->id)->where('user_role','vle')->first();
        
        $consultation_fee = 0;
         
@@ -64,9 +71,10 @@ class AppointmentController extends Controller
         } else {
             $consultation_fee = 500;
         }
-        if ($consultation_fee > $userAalletAmount->amount) {
+        if ($consultation_fee >  $vleUserWallet->amount) {
             return response(['status' => 0, 'msg' => 'Insufficient wallet amount']);
         }
+
         $patient = null;
         if ($request->patient_type == "1") {
             $patient = Patients::create([
@@ -159,16 +167,22 @@ class AppointmentController extends Controller
             'appointment_type' => $request->consultation_type
         ]);
 
+         
+        $videourl = 'https://meet.medyseva.com/' . $appointment->id;
+		Appointment::where(["id"=>$appointment->id])->update(['video_link' => $videourl]);
+
+
+
         if ($request->consultation_type == "1") {
             $service_fee = 150;
-            $vle_ref = 19;
-            $partner_ref = 9.50;
-            $medy_sewa_ref = 121.50;
+            $vle_ref = 20;
+            $partner_ref = 10;
+            $medy_sewa_ref = 119;
         } else {
             $service_fee = 500;
-            $vle_ref = 57;
-            $partner_ref = 28.50;
-            $medy_sewa_ref = 414.50;
+            $vle_ref = 60;
+            $partner_ref = 30;
+            $medy_sewa_ref = 410;
         }
 
         $vleTds = ($vle_ref * 5) / 100;
@@ -186,7 +200,7 @@ class AppointmentController extends Controller
 
         $medy_sewa_ref = $medy_sewa_ref + $vleTds;
 
-        $loginUserAmt = $userAalletAmount->amount;
+        $loginUserAmt =  $vleUserWallet->amount;
         $loginUserAmt = $loginUserAmt - $service_fee;
 
         // admin wallet
@@ -197,8 +211,8 @@ class AppointmentController extends Controller
             'user_id' => $user->id,
             'trx_id' => $trx_id,
             'user_role' =>  'vle',
-            'wallet_id' => $userAalletAmount->id,
-            'from_wallet' => $userAalletAmount->id,
+            'wallet_id' =>  $vleUserWallet->id,
+            'from_wallet' =>  $vleUserWallet->id,
             'to_wallet' => 4,
             'category' => 'appointment',
             'appointment_id' => $appointment->id,
@@ -212,14 +226,16 @@ class AppointmentController extends Controller
 
         // add vle ref
         $adminNewAmount = $adminNewAmount - $vle_ref;
+
         $loginUserAmt = $loginUserAmt + $vle_ref;
+        
         TrHistory::create([
             'user_id' => $user->id,
             'user_role' =>  'vle',
             'trx_id' => $trx_id,
-            'wallet_id' => $userAalletAmount->id,
+            'wallet_id' =>  $vleUserWallet->id,
             'from_wallet' => 4,
-            'to_wallet' => $userAalletAmount->id,
+            'to_wallet' =>  $vleUserWallet->id,
             'category' => 'appointment_referral',
             'appointment_id' => $appointment->id,
             'amount' => $vle_ref,
@@ -324,7 +340,7 @@ class AppointmentController extends Controller
 
         // update user wallet
         UserWallet::where('id', 4)->update(['amount' => $adminNewAmount]);
-        UserWallet::where('id', $userAalletAmount->id)->update(['amount'=> $loginUserAmt]);
+        UserWallet::where('id',  $vleUserWallet->id)->update(['amount'=> $loginUserAmt]);
 
         return response(['status' => 1, 'msg' => 'Appointment created successfully']);
     }
