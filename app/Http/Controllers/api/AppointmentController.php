@@ -228,7 +228,7 @@ class AppointmentController extends Controller
         $adminNewAmount = $adminNewAmount - $vle_ref;
 
         $loginUserAmt = $loginUserAmt + $vle_ref;
-        
+
         TrHistory::create([
             'user_id' => $user->id,
             'user_role' =>  'vle',
@@ -260,7 +260,7 @@ class AppointmentController extends Controller
             'user_role' =>  'admin',
             'trx_id' => $trx_id,
             'wallet_id' => 4,
-            'from_wallet' => $userAalletAmount->id,
+            'from_wallet' => $vleUserWallet->id,
             'to_wallet' => 4,
             'category' => 'tds',
             'appointment_id' => $appointment->id,
@@ -341,6 +341,34 @@ class AppointmentController extends Controller
         // update user wallet
         UserWallet::where('id', 4)->update(['amount' => $adminNewAmount]);
         UserWallet::where('id',  $vleUserWallet->id)->update(['amount'=> $loginUserAmt]);
+
+
+             
+		if($request->post('consultation_type') == 1){
+			$firebaseToken = User::whereNotNull('device_token')
+						->where('device_token', '!=', '')
+						->where('device_token', '!=', '0')
+						->where('doctor_type' , '0')
+						->pluck('device_token')
+						->all();
+			
+					$data = [
+						'firebaseToken' => $firebaseToken,
+						'title' => 'New Appointment has been arrised',
+						'body' => 'Hello Doctor! Patient has booked an appointment. To start consulting immediately',
+						'data' => [
+							'video_url' => $videourl,
+							'type' => 1,
+							'appointment_id' => $appointment->id,
+						],					
+					];
+			
+
+			$res = sendNotification($data);
+		}
+
+
+
 
         return response(['status' => 1, 'msg' => 'Appointment created successfully']);
     }

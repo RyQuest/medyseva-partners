@@ -217,21 +217,26 @@ function sendSMS(){
 	echo $response;
 }
 
- function sendNotification(Request $request)
+ 
+
+function sendNotification($mypost)
     {
-        $firebaseToken = User::whereNotNull('device_token')->pluck('device_token')->all();
+        // $firebaseToken = User::whereNotNull('device_token')->pluck('device_token')->all();
+        $firebaseToken = $mypost['firebaseToken'];
             
         $SERVER_API_KEY = env('FCM_SERVER_KEY');
     
         $data = [
             "registration_ids" => $firebaseToken,
             "notification" => [
-                "title" => $request->title,
-                "body" => $request->body,  
-            ]
+                "title" => $mypost['title'],
+                "body" => $mypost['body'],  
+            ],
+            "data" => isset($mypost['data']) ? $mypost['data'] : null,
         ];
+		
         $dataString = json_encode($data);
-      
+ // return $dataString;     
         $headers = [
             'Authorization: key=' . $SERVER_API_KEY,
             'Content-Type: application/json',
@@ -247,9 +252,11 @@ function sendSMS(){
         curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
                  
         $response = curl_exec($ch);
-    
-        return back()->with('success', 'Notification send successfully.');
+        return $response;
+        // return back()->with('success', 'Notification send successfully.');
     }
+
+
 
 function sendMessage($mobile)
     {
