@@ -430,6 +430,8 @@ class AppointmentController extends Controller
 
         $wallet=UserWallet::where(['user_id'=>$request->user_id,'user_role'=>'vle'])->first();
 
+        $todayAppointment=Appointment::where(['added_by'=>$request->user_id,'date'=>date('y-d-m')])->count();
+
         $balance=$wallet->amount;
         
         $dashboard=array('patients'=>$patients,'appointments'=>$appointment,'balance'=>$balance);
