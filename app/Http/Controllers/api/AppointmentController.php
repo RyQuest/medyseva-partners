@@ -428,7 +428,7 @@ class AppointmentController extends Controller
 
         $appointment= Appointment::where('added_by',$request->user_id)->count();
 
-        $wallet=UserWallet::select('amount')->where('user_id',$request->user_id)->first();
+        $wallet=UserWallet::where(['user_id'=>$request->user_id,'user_role'=>'vle'])->first();
 
         $balance=$wallet->amount;
         
