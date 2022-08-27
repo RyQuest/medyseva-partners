@@ -376,8 +376,12 @@ class AppointmentController extends Controller
     public function index(Request $request)
     {
 
-        $appointment = Appointment::select('appointments.*','patientses.name','patientses.mobile','patientses.email')->where('appointments.added_by',$request->user_id)
+        $appointment = Appointment::select('appointments.*','patientses.name','patientses.mobile','patientses.email')
+        ->where('appointments.added_by',$request->user_id)
         ->join('patientses','patientses.id','=','appointments.patient_id')->orderBy('id','desc')
+        ->take($request->limit)
+        ->skip($request->offset)
+        ->latest()
         ->get();
 
          
@@ -390,7 +394,7 @@ class AppointmentController extends Controller
     {
 
         $appointment = Appointment::select('appointments.*','patientses.name','patientses.mobile','patientses.email')
-                       ->where('appointments.added_by',$request->user_id)->where('appointments.date',date('d-m-y'))
+                       ->where('appointments.added_by',$request->user_id)->where('appointments.created_at',Carbon::today())
                         ->join('patientses','patientses.id','=','appointments.patient_id')->orderBy('id','desc')
                         ->get();
 
