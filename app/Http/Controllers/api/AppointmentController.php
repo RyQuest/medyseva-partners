@@ -393,10 +393,12 @@ class AppointmentController extends Controller
     public function vleTodayAppointment(Request $request)
     {
 
-        $appointment = Appointment::select('appointments.*','patientses.name','patientses.mobile','patientses.email')
+        $appointment = Appointment::select('appointments.*','patientses.name','patientses.mobile','patientses.email','invoices.id as invoice_id')
                        ->where('appointments.added_by',$request->user_id)
                        ->whereDate('appointments.created_at',Carbon::today())
-                        ->join('patientses','patientses.id','=','appointments.patient_id')->orderBy('id','desc')
+                        ->join('patientses','patientses.id','=','appointments.patient_id')
+                        ->join('invoices', 'invoices.appointment_id', '=', 'appointments.id')
+                        ->orderBy('id','desc')
                         ->get();
 
          
