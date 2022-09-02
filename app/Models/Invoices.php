@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\Patients;
 class Invoices extends Model
 {
     use HasFactory;
@@ -13,7 +13,7 @@ class Invoices extends Model
     protected $guarded = ['id'];
 
     public function patient(){
-        return $this->belongsTo(\App\Models\Patients::class,'patient_id');
+        return $this->hasOne(\App\Models\Patients::class,'id', 'patient_id');
     }
     
     public function vle_comission($amount){
@@ -25,5 +25,6 @@ class Invoices extends Model
         return $comm;
     }
 
+   
     
 }
