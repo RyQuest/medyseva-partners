@@ -12,6 +12,7 @@ use App\Models\TrHistory;
 use App\Models\User;
 use App\Models\UserWallet;
 use App\Models\VleUser;
+use App\Models\PartnerCommission;
 use Carbon\Carbon;
 class AppointmentController extends Controller
 {
