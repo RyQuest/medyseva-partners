@@ -407,8 +407,8 @@ class AppointmentController extends Controller
                         $appointment = Appointment::with(['patient', 'chamber', 'doctor', 'payment_user', 'invoice'])
                         ->where('added_by',$request->user_id)
                         ->whereDate('appointments.created_at',Carbon::today())
-                        ->take($limit)
-                        ->skip($offset)
+                        ->take($request->limit)
+                        ->skip($request->offset)
                         ->orderBy('id', 'desc')
                         ->get();
 
