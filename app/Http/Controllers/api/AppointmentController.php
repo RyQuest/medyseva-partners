@@ -407,11 +407,6 @@ class AppointmentController extends Controller
                         $appointment = Appointment::with(['patient', 'chamber', 'doctor', 'payment_user', 'invoice'])
                         ->where('added_by',$request->user_id)
                         ->whereDate('appointments.created_at',Carbon::today())
-                        ->where(function($query) use ($date) {
-                            if($date != null){
-                                $query->where('date', $date);
-                            }
-                        })
                         ->take($limit)
                         ->skip($offset)
                         ->orderBy('id', 'desc')
