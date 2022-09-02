@@ -397,7 +397,7 @@ class AppointmentController extends Controller
                        ->where('appointments.added_by',$request->user_id)
                        ->whereDate('appointments.created_at',Carbon::today())
                         ->join('patientses','patientses.id','=','appointments.patient_id')
-                        ->join('invoices', 'invoices.appointment_id', '=', 'appointments.id')
+                        ->leftjoin('invoices', 'invoices.appointment_id', '=', 'appointments.id')
                         ->orderBy('id','desc')
                         ->get();
 
