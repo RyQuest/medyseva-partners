@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\InvoiceItem;
 use App\Models\Invoices;
 use App\Models\VleUser;
+use App\Models\Prescriptions;
 
 class InvoiceController extends Controller
 {
@@ -31,6 +32,9 @@ class InvoiceController extends Controller
         //->groupBy('invoices.invoice_id')
         ->get();
 
+        foreach ($invoice as $key => $value) {
+            $invoice[$key]['prescription'] = \DB::table('prescription')->where('appointment_id',$value->appointment_id)->get();
+        }
         return response(['status' => 1,'data' => $invoice]);
     }
 
